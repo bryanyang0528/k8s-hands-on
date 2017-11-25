@@ -1,0 +1,23 @@
+# Default values for helm-demo.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+nginxImage:
+  repository: asia.gcr.io/elite-protocol-186205/nginx-ssl-proxy
+  tag: "1.0"
+  replicas: 3
+
+hugoWebImage:
+  repository: asia.gcr.io/elite-protocol-186205/hugo-web
+  tag: "1.0"
+  replicas: 3
+
+webUpstream: "hugo-web:12345"
+
+resources:
+  limits:
+    cpu: 10m
+    memory: 128Mi
+  requests:
+    cpu: 10m
+    memory: 128Mi
+

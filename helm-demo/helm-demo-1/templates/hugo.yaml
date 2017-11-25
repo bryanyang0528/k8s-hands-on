@@ -1,0 +1,38 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: hugo-web
+  labels:
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
+spec:
+  type: ClusterIP
+  ports:
+  - port: 12345
+    targetPort: 12345
+    protocol: TCP
+    name: hugo
+  selector:
+    app: hugo-web
+---
+
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: hugo-web
+  labels:
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
+spec:
+  replicas: {{ .Values.hugoWebImage.replicas }}
+  template:
+    metadata:
+      labels:
+        app: hugo-web
+    spec:
+      containers:
+      - name: hugo
+        image: "{{ .Values.hugoWebImage.repository }}:{{ .Values.hugoWebImage.tag }}"
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 12345
+        resources:
+{{ toYaml .Values.resources | indent 10 }}

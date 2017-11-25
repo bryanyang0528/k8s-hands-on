@@ -1,0 +1,43 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: nginx-server
+  labels:
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
+spec:
+  type: LoadBalancer
+  ports:
+  - port: 80
+    targetPort: 80
+    protocol: TCP
+    name: nginx
+  selector:
+    app: nginx-server
+---
+
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: nginx-server
+  labels:
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
+spec:
+  replicas: {{ .Values.nginxImage.replicas }}
+  template:
+    metadata:
+      labels:
+        app: nginx-server
+    spec:
+      containers:
+      - name: nginx
+        image: "{{ .Values.nginxImage.repository }}:{{ .Values.nginxImage.tag }}"
+        imagePullPolicy: Always
+        env:
+        - name: ENABLE_SSL
+          value: "false"
+        - name: TARGET_SERVICE
+          value: {{ .Values.webUpstream }}
+        ports:
+        - containerPort: 80
+        resources:
+{{ toYaml .Values.resources | indent 10 }}
