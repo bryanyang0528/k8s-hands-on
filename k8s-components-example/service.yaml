@@ -1,0 +1,14 @@
+# https://kubernetes.io/docs/concepts/services-networking/service/
+apiVersion: v1
+kind: Service
+metadata:
+  name: <service name>
+spec:
+  type: <service type, LoadBalancer or ClusterIP or NodePort>
+  ports:
+  - port: <svc port>
+    targetPort: <svc port>
+    protocol: TCP
+    name: <port name>
+  selector:
+    key: value
